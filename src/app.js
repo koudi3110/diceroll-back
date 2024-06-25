@@ -26,8 +26,10 @@ app.use(
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+const dbUrl = "mongodb://localhost:27017/3icp";
+
 mongoose
-  .connect(process.env.DB_URL, {
+  .connect(process.env.DB_URL || dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

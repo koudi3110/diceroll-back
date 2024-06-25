@@ -42,7 +42,7 @@ const errorHandler = (error) => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app, "10.2.101.12");
 server.on("error", errorHandler);
 server.on("listening", () => {
   const address = server.address();
@@ -65,6 +65,10 @@ app.set("io", io);
 
 io.on("connection", async (socket) => {
   console.log("socket");
+  socket.on("dice:launch", async (data) => {
+    io.sockets.emit(`dice:launch:${data._id}`);
+  });
+
   socket.on("disconnect", async () => {
     console.log("déconnexion");
   });

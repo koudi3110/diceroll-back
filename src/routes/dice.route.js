@@ -96,4 +96,14 @@ router.post("/roll/:id", async (req, res, next) => {
   }
 });
 
+router.get("/history/:id/:limit", async (req, res, next) => {
+  try {
+    const response = await diceService.history(req.params.id, req.params.limit);
+    res.json(response);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: error?.message || error });
+  }
+});
+
 module.exports = router;

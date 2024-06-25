@@ -81,7 +81,7 @@ const play = async (idsession, idplayer, io) => {
       "players.player"
     );
 
-    if (timeoutId[session._id]) {
+    if (timeoutId[session?._id]) {
       clearTimeout(timeoutId[session._id]);
       delete timeoutId[session._id];
     }
@@ -227,6 +227,22 @@ const abandon = async (session, idplayer, io) => {
   }
 };
 
+const history = async (idplayer, limit) => {
+  try {
+    const sessions = await Session.find({ "players.player": idplayer })
+      .populate("players.player")
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    return {
+      datas: sessions,
+      total: await Session.find({ "players.player": idplayer }).length,
+    };
+  } catch (error) {
+    throw error?.message || error;
+  }
+};
+
 // -------------------------------------
 // TOOOOOLLSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 // -------------------------------------
@@ -262,7 +278,9 @@ const findSession = async (id) => {
 };
 
 const outGame = async (nsession, player, io) => {
-  const session = await Session.findById(nsession._id);
+  const session = await Session.findById(nsession._id).populate(
+    "players.player"
+  );
   try {
     if (timeoutId[session._id]) {
       clearTimeout(timeoutId[session._id]);
@@ -311,6 +329,9 @@ const outGame = async (nsession, player, io) => {
       timer(session, newhand, io);
       await updateSession(session);
     }
+    // await updateSession(session);
+
+    console.log(session);
 
     const newSession = await Session.findById(session._id).populate(
       "players.player"
@@ -382,4 +403,5 @@ module.exports = {
   init,
   deleteSession,
   abandon,
+  history,
 };
