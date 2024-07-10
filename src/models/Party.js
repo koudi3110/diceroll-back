@@ -11,7 +11,7 @@ const schema = new mongoose.Schema(
       default: null,
     },
     score: { type: Number, default: null },
-    session: { type: mongoose.Schema.Types.ObjectId },
+    session: { type: mongoose.Schema.Types.ObjectId, ref: "Session" },
   },
   { timestamps: true }
 );
